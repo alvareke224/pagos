@@ -25,6 +25,10 @@ public class Pago {
     @NotNull(message = "La fecha no puede ser nula")
     private LocalDate fecha;
 
+    private String codigoCupon;
+
+    private double montoFinal;
+
     // Getters y Setters
 
     public Long getId() { return id; }
@@ -41,4 +45,20 @@ public class Pago {
 
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
+
+    public String getCodigoCupon() {
+        return codigoCupon;
+    }
+
+    public void setCodigoCupon(String codigoCupon) {
+        this.codigoCupon = codigoCupon;
+    }
+
+    public double getMontoFinal() {
+        return montoFinal;
+    }
+
+    public void setMontoFinal(double montoFinal) {
+        this.montoFinal = montoFinal;
+    }
 }
