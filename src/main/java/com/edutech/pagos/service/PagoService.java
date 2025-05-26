@@ -34,9 +34,9 @@ public class PagoService {
         if (codigoCupon == null) return monto;
 
         return switch (codigoCupon.toUpperCase()) {
-            case "EDU10" -> monto * 0.90; // 10% descuento
+            case "DESC10" -> monto * 0.90; // 10% descuento
             case "DESC20" -> monto * 0.80; // 20% descuento
-            case "FULL30" -> monto * 0.70; // 30% descuento
+            case "DESC30" -> monto * 0.70; // 30% descuento
             default -> monto; // cupón no válido → sin descuento
         };
     }
