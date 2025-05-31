@@ -17,9 +17,18 @@ public class PagoService {
         return repositorio.findAll();
     }
 
-    public Pago guardar(Pago p) {
-        p.setMontoFinal(calcularMontoConDescuento(p.getMonto(), p.getCodigoCupon()));
-        return repositorio.save(p);
+    public Pago guardar(Pago pago) {
+        if (repositorio.existsByUsuarioAndFechaAndMonto(
+                pago.getUsuario(),
+                pago.getFecha(),
+                pago.getMonto())) {
+            throw new IllegalArgumentException("Este pago ya ha sido registrado.");
+        }
+
+        double montoConDescuento = calcularMontoConDescuento(pago.getMonto(), pago.getCodigoCupon());
+        pago.setMontoFinal(montoConDescuento);
+
+        return repositorio.save(pago);
     }
 
     public Pago buscarPorId(Long id) {
@@ -30,14 +39,28 @@ public class PagoService {
         repositorio.deleteById(id);
     }
 
+    public Pago actualizar(Long id, Pago nuevosDatos) {
+        Pago pagoExistente = buscarPorId(id);
+        if (pagoExistente == null) return null;
+
+        pagoExistente.setUsuario(nuevosDatos.getUsuario());
+        pagoExistente.setMonto(nuevosDatos.getMonto());
+        pagoExistente.setMetodo(nuevosDatos.getMetodo());
+        pagoExistente.setFecha(nuevosDatos.getFecha());
+        pagoExistente.setCodigoCupon(nuevosDatos.getCodigoCupon());
+        pagoExistente.setMontoFinal(calcularMontoConDescuento(nuevosDatos.getMonto(), nuevosDatos.getCodigoCupon()));
+
+        return repositorio.save(pagoExistente);
+    }
+
     private double calcularMontoConDescuento(double monto, String codigoCupon) {
         if (codigoCupon == null) return monto;
 
         return switch (codigoCupon.toUpperCase()) {
-            case "DESC10" -> monto * 0.90; // 10% descuento
-            case "DESC20" -> monto * 0.80; // 20% descuento
-            case "DESC30" -> monto * 0.70; // 30% descuento
-            default -> monto; // cupón no válido → sin descuento
+            case "EDU10" -> monto * 0.90;
+            case "DESC20" -> monto * 0.80;
+            case "FULL30" -> monto * 0.70;
+            default -> monto;
         };
     }
 }
